@@ -1,0 +1,201 @@
+﻿@page "/homepage/{UserId:int}"
+@using System.Collections.Generic
+@using Programmin2_classroom.Shared.DTOS
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject HttpClient Http
+<link href="/css/main.css" rel="stylesheet" />
+<link href="/css/Homepage.css" rel="stylesheet" />
+
+
+
+@*מסך בית*@
+<div class="iphoneDiv scrollbar-hidden">
+
+    @*חלק עליון של המסך*@
+    <div class="HomepageHeader">
+        <p>@user.Coins</p>
+    <img src="/images/coin.png" />
+        <button style="background:none; border:none; padding:0; cursor:pointer; z-index:1" @onclick="NavigateToSettings">
+            <img src="/images/profileuser.png" style="left:0; width:10%; margin-left:40px; margin-top:5px;" alt="Profile User" />
+        </button>
+
+    </div>
+   
+    @*מפה*@
+    
+        <img id="mapImage" src="images/map.png" />
+        @foreach (var point in Points)
+        {
+            <div @onclick="() => ShowPopup(point)"
+             style="position:absolute; width:50px; height:50px; background-color:none; 
+                    border-radius:50%; cursor:pointer ;  
+                    left:@($"{point.X}px"); top:@($"{point.Y}px");">
+            </div>
+        }
+   
+
+    @*פופ אפ לכל עיר שמוביל ליחידת לימוד ולטריוויה*@
+    @if (showPopup)
+    {
+        <div class="popupCitys @selectedCity" style="
+                            left: 50px;
+                            top:@($"{popupPosition.Y + 60}px");">
+
+            <button id="closePopupButton" @onclick="ClosePopup">&times;</button>
+            <h4 style="margin-top:-25px;">@popupContent</h4>
+            <div class="popupButtons @selectedCity">
+                <button @onclick="NavigateToLearn">Let's Learn</button>
+
+                <button @onclick="NavigateToTest">Test Yourself</button>
+            </div>
+        </div>
+    }
+
+    @*אייקונים לצאט ולטבלת השיאים*@
+    <div class="icons">
+        <img src="/images/chaticon.png" @onclick="NavigateToChat" />
+		<img src="/images/leaderboardicon.png" />
+    </div>
+
+    @*חלק תחתון של המסך*@
+    <div id=footer>
+        <img id="footerimg" src="/images/footer.png" />
+    </div>
+
+    <div class="backgroundDiv">
+		<img src="/images/background.png" style="width:393px;" />
+    </div>
+
+</div>
+
+
+@code {
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    private bool showPopup = false;
+    private (int X, int Y) popupPosition;
+    private string popupContent;
+    private string selectedCity;
+    private Users user;
+
+
+
+    private List<Point> Points = new List<Point>
+    {
+        new Point(150, 160, "Haifa"),
+        new Point(210, 330, "Dead-Sea"),
+        new Point(140, 610, "Eilat"),
+        new Point(150, 300, "Jerusalem"),
+        new Point(210, 150, "Sea Of Galilee"),
+        new Point(120, 240, "Tel-Aviv")
+    };
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUserDetails();
+    }
+
+    private async Task LoadUserDetails()
+    {
+        try
+        {
+            user = await Http.GetFromJsonAsync<Users>($"api/Settings/{UserId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading user details: {ex.Message}");
+        }
+    }
+
+    private void ShowPopup(Point point)
+    {
+        popupPosition = (point.X, point.Y);
+        popupContent = point.Content;
+        selectedCity = point.Content;
+        showPopup = true;
+    }
+
+    private void ClosePopup()
+    {
+        showPopup = false;
+    }
+
+    private void NavigateToLearn()
+    {
+        switch (selectedCity)
+        {
+            case "Haifa":
+                Navigation.NavigateTo($"/haifa/studyunit/{UserId}");
+                break;
+            case "Dead Sea":
+                Navigation.NavigateTo("/deadsea/studyunit");
+                break;
+            case "Eilat":
+                Navigation.NavigateTo("/eilat/studyunit");
+                break;
+            case "Jerusalem":
+                Navigation.NavigateTo("/jerusalem/studyunit");
+                break;
+            case "Sea Of Galilee":
+                Navigation.NavigateTo("/seaofgalilee/studyunit");
+                break;
+            case "Tel Aviv":
+                Navigation.NavigateTo("/telaviv/studyunit");
+                break;
+        }
+    }
+
+    private void NavigateToTest()
+    {
+        switch (selectedCity)
+        {
+            case "Haifa":
+                Navigation.NavigateTo($"/haifa/trivia/{UserId}");
+                break;
+            case "Dead Sea":
+                Navigation.NavigateTo("/deadsea/test");
+                break;
+            case "Eilat":
+                Navigation.NavigateTo("/eilat/test");
+                break;
+            case "Jerusalem":
+                Navigation.NavigateTo("/jerusalem/test");
+                break;
+            case "Sea Of Galilee":
+                Navigation.NavigateTo("/seaofgalilee/test");
+                break;
+            case "Tel Aviv":
+                Navigation.NavigateTo("/telaviv/test");
+                break;
+        }
+    }
+
+    private void NavigateToChat(){
+        Navigation.NavigateTo($"/Chat/{UserId}");
+
+    }
+
+    private void NavigateToSettings()
+    {
+        Navigation.NavigateTo($"/settings/{UserId}");
+    }
+
+    public class Point
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+        public string Content { get; set; }
+
+        public Point(int x, int y, string content)
+        {
+            X = x;
+            Y = y;
+            Content = content;
+        }
+    }
+
+}

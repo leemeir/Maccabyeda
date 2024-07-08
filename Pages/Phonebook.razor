@@ -1,0 +1,167 @@
+﻿@page "/Chat/{UserId:int}"
+@using System.Collections.Generic
+@using Programmin2_classroom.Shared.DTOS.ChatDtos
+@inject IJSRuntime JSRuntime
+@inject NavigationManager Navigation
+@inject HttpClient Http
+<link href="./css/main.css" rel="stylesheet" />
+<link href="./css/PhoneBook.css" rel="stylesheet" />
+
+
+<div class="iphoneDiv scrollbar-hidden">
+
+    <div class="chat-container">
+
+        @if (showPhoneBookList)
+        {
+            <div class="phonebook-container">
+                <h1>Chats</h1>
+
+                @if (phoneBookList != null)
+                {
+                    <div class="phonebook-list">
+                        @foreach (PhoneBook user in phoneBookList)
+                        {
+                            <div class="contact-item">
+                                <button @onclick="() => HistoryChat(user.UserId)">
+                                    <div class="avatar">
+                                        <img src="@user.ImageUrl" alt="@user.FirstName @user.LastName" />
+                                    </div>
+                                    <div class="contact-details">
+                                        <h4>@user.FirstName @user.LastName</h4>
+                                        <p class="last-message">(Last message preview)</p>
+                                    </div>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="no-users">No contacts found.</p>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="chat-history-container">
+                <div class="chat-header">
+                    <button @onclick="ShowPhoneBookList" class="back-button">
+                        <i class="fa fa-arrow-left"></i>
+                    </button>
+                    <div class="user-info">
+                        <img src="@user.ImageUrl" alt="@user.FirstName @user.LastName" class="avatar" />
+                        <h2>@user.FirstName @user.LastName</h2>
+                    </div>
+                </div>
+                <div class="chat-history">
+                    @if (historyChat != null && historyChat.HistoryChatList != null && historyChat.HistoryChatList.Any())
+                    {
+                        @foreach (var history in historyChat.HistoryChatList.OrderBy(chat => chat.Time))
+                        {
+                            <div class="message @(history.UserId == UserId ? "sent" : "received")">
+                                <div class="message-content">
+                                    <span>@history.Message</span>
+                                    <small>@history.Time.ToString("g")</small>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="no-history">No chat history found.</p>
+                    }
+                </div>
+                <div class="message-input">
+                    <EditForm Model="@newMessage" OnValidSubmit="SendMessage">
+                        <InputText @bind-Value="newMessage.message" class="message-textbox" placeholder="Type your message here..." />
+                        <button type="submit" class="send-button">
+                            <i class="fa fa-paper-plane"></i>
+                        </button>
+                    </EditForm>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+
+@code {
+    [Parameter]
+    public int UserId { get; set; }
+
+    private List<PhoneBook> phoneBookList = new List<PhoneBook>();
+    ListMessage historyChat = new ListMessage { HistoryChatList = new List<Chating>() };
+    PhoneBook user = new PhoneBook();
+    private bool showPhoneBookList = true;
+    private NewMessage newMessage = new NewMessage();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsersDetails();
+    }
+
+    private async Task LoadUsersDetails()
+    {
+        var getUsersListResponse = await Http.GetAsync("api/Chat/GetUsers");
+        if (getUsersListResponse.IsSuccessStatusCode)
+        {
+            phoneBookList = getUsersListResponse.Content.ReadFromJsonAsync<List<PhoneBook>>().Result;
+
+        }
+    }
+    private async Task HistoryChat(int userId)
+    {
+        showPhoneBookList = false;
+        newMessage.senderId = UserId;
+        newMessage.receiverId = userId;
+        //var receiverId = userId;
+
+        var getHistoryChatResponse = await Http.GetAsync($"api/Chat/HistoryChat/{userId}/{UserId}");
+        if (getHistoryChatResponse.IsSuccessStatusCode)
+        {
+            var responseContent = await getHistoryChatResponse.Content.ReadAsStringAsync();
+            Console.WriteLine("Response content: " + responseContent);
+
+            historyChat = await getHistoryChatResponse.Content.ReadFromJsonAsync<ListMessage>();
+            Console.WriteLine("History chat list count: " + historyChat.HistoryChatList.Count);
+        }
+        else
+        {
+            Console.WriteLine("Error: " + getHistoryChatResponse.StatusCode);
+            historyChat = new ListMessage { HistoryChatList = new List<Chating>() };
+        }
+        StateHasChanged();
+
+    }
+    private void ShowPhoneBookList()
+    {
+        showPhoneBookList = true;
+        StateHasChanged();
+    }
+
+    private async Task SendMessage()
+    {
+        newMessage.messageTime = DateTime.UtcNow;
+
+        var response = await Http.PostAsJsonAsync("api/Chat/Message", newMessage);
+        if (response.IsSuccessStatusCode)
+        {
+            // הוספת ההודעה החדשה להיסטוריית הצ'אט המוצגת
+            historyChat.HistoryChatList.Add(new Chating
+                {
+                    UserId = newMessage.senderId,
+                    ReceiverId = newMessage.receiverId,
+                    Message = newMessage.message,
+                    Time = newMessage.messageTime
+                });
+
+            // איפוס תיבת הטקסט
+            newMessage.message = string.Empty;
+
+            StateHasChanged();
+        }
+    }
+}

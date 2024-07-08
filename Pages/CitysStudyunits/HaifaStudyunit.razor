@@ -1,0 +1,477 @@
+﻿@page "/haifa/studyunit/{UserId:int}"
+<link href="/css/main.css" rel="stylesheet" />
+<link href="/css/StudyUnits.css" rel="stylesheet"/>
+@inject NavigationManager Navigation
+@inject HttpClient Http
+
+
+<div class="iphoneDiv scrollbar-hidden">
+	 <button id="close" @onclick="CloseStudyUnit">&times;</button>
+
+	@*פופ אפ שמוודא רצון סגירה של יחידת הלימוד*@
+	@if (IsClosePopup)
+	{
+		<div class="modal fade show" id="closeModal" tabindex="-1" role="dialog" style="display: block;">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content closePopup">
+					<div class="modal-header">
+						<h5 class="modal-title">Are you sure you want to close the study unit? </h5>
+					</div>
+					<div class="modal-body">
+						<p>You will lose the points you have earned.</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" @onclick="HideClosePopup">No, i want to stay</button>
+						<button type="button" class="btn btn-primary" @onclick="ConfirmClose">Yes, Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-backdrop fade show"></div>
+	}
+	<h1>Haifa</h1>
+
+	@if(countPages == 0){
+		<div class="page1">
+			<br />
+			<div style="width:330px; border-radius:30px;">
+				<img src="/images/haifapic.jpg" style="width:100%; border-radius: 30px;" />
+			</div>
+			<br />
+
+			<br />
+			<h4>The city of all religons</h4>
+			<h4>Let's learn about Haifa!</h4>
+
+			<button @onclick=NextPage>start</button>
+
+			<div id=footer>
+				<img id="footerimg" src="/images/footer.png" />
+			</div>
+		</div>
+	}
+
+	@if(countPages == 1){
+		<div class="page2">
+			<button @onclick=NextPage>General information</button>
+			<button class="Unclicked">Mixed City</button>
+			<button class="Unclicked">Religous Sites</button>
+			<button class="Unclicked">hoilday Of Holidays</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+		</div>
+
+	}
+
+	@if (countPages == 2)
+	{
+			<h2>General Information</h2>
+		<div class="page3">
+			<div class="page3Info">
+				<p>Haifa is a city with the third largest population in Israel (after Jerusalem and Tel Aviv-Yafo)</p>
+			</div>
+			<br><br>
+			<div class="page3Info">
+				<p>
+					Haifa population is
+					296, 650.
+				</p>
+			</div>
+			<br><br>
+			<div class="page3Info">
+				<p>sits on the slopes of Mount Carmel facing the Mediterranean Sea</p>
+			</div>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" @onclick=NextPage class="nextButton"/>
+			</div>
+@*			<button @onclick=NextPage>Next</button>
+*@		</div>
+
+	}
+
+	@if (countPages == 3)
+	{
+		<div class="page4">
+			<button class="alreadyDoneButton">General information</button>
+			<button @onclick=NextPage>Mixed City</button>
+			<button class="Unclicked">Religous Sites</button>
+			<button class="Unclicked">hoilday Of Holidays</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+
+		</div>
+
+	}
+
+	@if (countPages == 4)
+	{
+		<h2>Mixed City</h2>
+		<div class="page5">
+			<p>Haifa is a city in Israel with a population of 296,650 people. It is famous for its cultural diversity and the peaceful coexistence of different ethnic and religious groups. In Haifa, Jews, Arabs, Christians, and members of other communities live and work together harmoniously.</p>
+			<div style="width:350px; height:300px;"><div style="position: relative; padding-bottom: 57.14%; padding-top: 0; height: 0;"><iframe title="Untitled genially" frameborder="0" width="350" height="200" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="https://view.genially.com/6649f512f1aad200142af8fa" type="text/html" allowscriptaccess="always" allowfullscreen="true" scrolling="yes" allownetworking="all"></iframe> </div> </div>
+			
+			<br />
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" @onclick=NextPage class="nextButton" />
+			</div>
+		</div>
+
+	}
+
+	@if (countPages == 5)
+	{
+		<div class="page6">
+			<button class="alreadyDoneButton">General information</button>
+			<button class="alreadyDoneButton">Mixed City</button>
+			<button @onclick=NextPage>Religous Sites</button>
+			<button class="Unclicked">hoilday Of Holidays</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+		</div>
+
+	}
+
+	@if (countPages == 6)
+	{
+		<h2>Religous Sites</h2>
+		<div class="page7">
+			<img src="/images/haifamap.png" style="width:300px" />
+			<p>
+				Click to learn about places in Haifa that are sacred to each of the religions:
+			</p>
+			<button @onclick=NextPage>Stella Maris Monastery</button>
+			<button class="Unclicked">Cave of Elijah the Prophet</button>
+			<button class="Unclicked">Baháʼí Garden</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+		</div>
+
+	}
+	
+	@if (countPages == 7)
+	{
+		<h2>Stella Maris Monastery</h2>
+		<div class="page8">
+
+			<p>Stella Maris Monastery is a special place located on Mount Carmel in Haifa, Israel. It is a church and a monastery that has a lot of history and religious importance. </p>
+			<img src="/images/stella_maris_monastery_2.jpg" style="width:100%" />
+
+			<br><br>
+			<p>Here are some interesting facts about Stella Maris Monastery:</p>
+			<div class="page8info">
+				<h4>Historical Background</h4>
+				<ul>
+					<li>The monastery was established by the Carmelite Order, a group of Catholic monks, in the 19th century.</li>
+					<li>The name "Stella Maris" means "Star of the Sea" in Latin.</li>
+					<li>This mountain has been a holy place for many religions for thousands of years. The Carmelites believe that the prophet Elijah lived in a cave on this mountain.</li>
+				</ul>
+			</div>
+
+			<br><br>	
+			<img src="/images/inside-of-church.jpg" style="width:100%" />
+			<br><br>
+
+			<div class="page8info">
+				<h4>Architecture</h4>
+				<ul>
+					<li>The monastery is known for its beautiful architecture. The church inside has stunning paintings and decorations. The ceiling is painted with scenes from the Bible, including stories about Elijah.</li>
+					<li>Inside the monastery, there is a cave which is believed to be where the prophet Elijah lived and prayed. Many people come to visit this sacred spot.</li>
+				</ul>
+			</div>
+
+			<br><br>
+			<img src="/images/stella-maris-lighthouse.jpg" style="width:100%" />
+			<br><br>
+
+			<div class="page8info">
+				<h4>Religious Significance</h4>
+				<ul>
+					<li>The Carmelite Order is named after Mount Carmel. They are known for their deep spiritual life and dedication to prayer.</li>
+					<li>Stella Maris Monastery is an important pilgrimage site for Christians. People from all over the world come here to pray and connect with their faith.</li>
+				</ul>
+			</div>
+
+			<br><br>
+			<img src="/images/stella_maris_monastery_3.jpg" style="width:100%" />
+			<br><br>
+
+			<div class="page8info">
+				<h4>Cultural Impact</h4>
+				<ul>
+					<li>Stella Maris Monastery is a symbol of peace and spirituality. It brings together people of different cultures and religions who visit to appreciate its history and beauty.</li>
+				</ul>
+			</div>
+
+
+			<br>
+			<p>Today, the monastery is open to visitors. People can come to see the beautiful church, the cave of Elijah, and enjoy the peaceful atmosphere of the monastery.
+				The location on Mount Carmel also offers a great view of the city of Haifa and the Mediterranean Sea.
+			</p>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png"  @onclick=NextPage  class="nextButton" />
+			</div>
+		</div>
+
+	}
+
+	@if (countPages == 8)
+	{
+		<h2>Religous Sites</h2>
+		<div class="page7">
+			<img src="/images/haifamap.png" style="width:300px" />
+			<p>
+				Click to learn about places in Haifa that are sacred to each of the religions:
+			</p>
+			<button class="alreadyDoneButton"> Stella Maris Monastery</button>
+			<button @onclick=NextPage>Cave of Elijah the Prophet</button>
+			<button class="Unclicked">Baháʼí Garden</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+		</div>
+
+	}
+
+	@if (countPages == 9){
+
+		<h2>Cave of Elijah the Prophet</h2>
+		<div class="page8">
+			<p>The Cave of Elijah the Prophet is a famous site located on Mount Carmel in Haifa, Israel. It is an important religious and historical place that attracts visitors from different faiths.</p>
+			<img src="/images/cueva_del_profeta_elias.jpg" style="width:100%"/>
+
+			<br><br>
+
+			<h4>Who Was Elijah the Prophet?</h4>
+			<p>	Elijah, also known as Elias, was a prophet mentioned in the Bible, the Quran, and other religious texts. He is known for performing miracles and being a messenger of God. He is a significant figure in Judaism, Christianity, and Islam.</p>
+			
+			<br><br>
+
+			<img src="/images/cueva_del_profeta_elias2.jpg" style="width:100%" />
+
+			<br><br>
+
+			<h4>Why Is the Cave Special?</h4>
+			<p>Many people believe that Elijah hid in this cave during a time of danger. It is considered a holy place where people go to pray and seek blessings.</p>
+			<p>In addition, the cave has been a pilgrimage site for many years, visited by people of various religions. It is part of the rich history of Mount Carmel and Haifa.</p>
+			<p>The Cave of Elijah is a popular spot for both tourists and pilgrims. People visit to pray, meditate, and enjoy the peaceful atmosphere. It is also part of several religious and historical tours in Haifa.</p>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" @onclick=NextPage class="nextButton" />
+			</div>
+
+		</div>
+	}
+
+	@if (countPages == 10)
+	{
+		<h2>Religous Sites</h2>
+		<div class="page7">
+			<img src="/images/haifamap.png" style="width:300px" />
+			<p>
+				Click to learn about places in Haifa that are sacred to each of the religions:
+			</p>
+			<button class="alreadyDoneButton">Stella Maris Monastery</button>
+			<button class="alreadyDoneButton">Cave of Elijah the Prophet</button>
+			<button @onclick=NextPage>Baháʼí Garden</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+		</div>
+
+	}
+
+	@if (countPages == 11){
+
+		<h2>Baháʼí Garden</h2>
+		<div class="page8">
+			<p>The Baháʼí Gardens in Haifa, Israel, are stunningly landscaped terraces that serve as both a place of beauty and a spiritual center for the Baháʼí Faith.</p>
+			<img src="/images/baháʼí_garden.jpg" style="width:100%">
+
+			<br><br>
+
+			<p>The Baháʼí Gardens are a series of terraced gardens that go up the side of Mount Carmel. There are 19 terraces in total, and they are filled with colorful flowers, beautiful plants, and flowing fountains.</p>
+			<p>The gardens are part of the Baháʼí World center, which is the spiritual and administrative center of the Baháʼí Faith. This religion teaches about the unity of all people and the importance of peace.</p>
+			<img src="/images/baháʼí_garden2.jpg" style="width:100%" />
+			
+			<br><br>
+
+			<p>When you visit the gardens, you can see many different kinds of plants and flowers that change with the seasons. There are also beautiful views of the city of Haifa and the Mediterranean Sea.</p>
+
+			<div>
+				<h4>Some interesting facts:</h4>
+				<ul>
+					<li>The Baháʼí Gardens are a UNESCO World Heritage Site.</li>
+					<li>The terraces cover almost a kilometer in length and rise over 225 meters.</li>
+					<li>The gardens are maintained by volunteers from the Baháʼí community around the world.</li>
+				</ul>
+			</div>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" @onclick=NextPage class="nextButton" />
+			</div>
+
+		</div>
+
+	}
+
+	@if (countPages == 12)
+	{
+		<div class="page2">
+			<button class="alreadyDoneButton">General information</button>
+			<button class="alreadyDoneButton">Mixed City</button>
+			<button class="alreadyDoneButton">Religous Sites</button>
+			<button @onclick=NextPage>hoilday Of Holidays</button>
+
+			<br>
+			<div class="UnitNav">
+				<img src="/images/previousarrow-11.png" @onclick=previouspage class="previousButton" />
+				<img src="/images/nextarrow-11.png" class="nextButton Unclicked" />
+			</div>
+		</div>
+
+	}
+
+	@if(countPages == 13)
+	{
+		<h2>hoilday Of Holidays</h2>
+		<div class="page8">
+			<p> "Holiday of Holidays" is a special event that happens every year. This festival takes place in December and celebrates the different holidays and cultures of the people living in Haifa.</p>
+			<p>The Holiday of Holidays is a festival that celebrates the major religious holidays that occur around the same time: Hanukkah (Jewish), Christmas (Christian), and Eid al-Fitr (Muslim). It shows the city’s diversity and the peaceful coexistence of different cultures and religions.</p>
+			<p>Haifa is known for being a city where people of different religions live together in harmony. The Holiday of Holidays highlights this unity and promotes mutual respect and understanding among all its residents.</p>
+
+			<h4>How do people celebrate?</h4>
+			<p>The festival includes various activities such as:</p>
+			<ul>
+				<li>Colorful parades with people dressed in traditional costumes.</li>
+				<li>Performances by local and international artists.</li>
+				<li>Tasting different foods from Jewish, Christian, and Muslim traditions.</li>
+				<li>Displaying works by local artists.</li>
+				<li>Hands-on activities for families and children.</li>
+			</ul>
+
+			<p>Most of the events take place in the Wadi Nisnas neighborhood and around the German Colony in Haifa. These areas are beautifully decorated with lights and holiday decorations.</p>
+			<p>Everyone is welcome to join the Holiday of Holidays. It is a public event, and many people from different backgrounds and countries come to enjoy the celebrations.</p>
+			<p>The Holiday of Holidays is a unique and joyful event that brings people together to celebrate diversity and unity. It’s a time when Haifa shines as a city of peace and friendship, making it a wonderful experience for all who attend.</p>
+
+			<button @onclick=NextPage>Finish!</button>
+		</div>
+	}
+
+	@if(countPages == 14){
+		<div class="divFinishGame">
+			<h2>Congratulations!</h2>
+			<br><br>
+			<p>You have finished the study unit about the city of Haifa</p>
+			<p>And you earned more 100 coins!</p>
+			<img src="/images/coin.png" style="width:80%" />
+			<br><br>
+			<button class="btn btn-info" @onclick="AddCoinsAsync">close</button>
+		</div>
+		}
+
+
+
+@*
+<h2>The holiday of the holidays</h2>
+<p>Those who come to Haifa in December will find that despite all the difficulties, the dream of a new Middle East is growing in the capital of Carmel. Vadi Nisnas and the German colony are decorated with fir trees and huge menorahs, the streets are lit up with holiday lights, the storefronts of the shops and confectioneries are decorated with the image of Santa Claus and the North Pole, liturgical music concerts are held in the churches, and on the street stages, as part of the Holiday Festival of the Holidays, there are circus shows and musical performances of Arabic music, jazz and Jewish poetry.</p>
+<p>The Holiday of Holidays, or 'Chag HaChagim' in Hebrew, is an annual celebration of the religious and cultural diversity of the city of Haifa in the north of Israel. It takes place every December and marks the Hanukkah, Christmas, and Ramadan holidays for the Jewish, Christian and Muslim residents of Haifa who live peacefully side by side. This year it will be celebrated from December 8-26.</p>
+
+<iframe width="350" height="300" src="https://www.youtube.com/embed/vOyUvZG7CyY?si=MNGGOgw9fECz29Tb" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+*@
+</div>
+
+@code{
+	private int countPages = 0;
+	private bool IsClosePopup = false;
+	private string message = "";
+
+
+	[Parameter]
+	public int UserId { get; set; }
+
+	private void NextPage(){
+		countPages++;
+	} 
+
+	private void previouspage(){
+		countPages--;
+	}
+
+	//פונקציה שפותחת פופ אפ שמוודא סגירת טרויוויה
+	private void CloseStudyUnit()
+	{
+		IsClosePopup = true;
+	}
+
+	//פונקציה שמסתירה את הפופ אפ
+	private void HideClosePopup()
+	{
+		IsClosePopup = false;
+	}
+
+	//פונקציה שמאשרת סגירת טרויוויה
+	private void ConfirmClose()
+	{
+		// Logic to handle the quiz closing
+		Navigation.NavigateTo($"/homepage/{UserId}");
+		IsClosePopup = false;
+
+	}
+
+	private async Task AddCoinsAsync()
+	{
+		try
+		{
+			var url = $"api/Coins/HaifaStudyUnit/{UserId}";
+			var updateResponse = await Http.GetAsync(url);
+			if (updateResponse.IsSuccessStatusCode)
+			{
+				Navigation.NavigateTo($"/homepage/{UserId}");
+			}
+			else
+			{
+				message = "There is an error";
+			}
+		}
+		catch (Exception ex)
+		{
+			// Handle the exception as needed
+			message = $"An exception occurred: {ex.Message}";
+		}
+	}
+
+}

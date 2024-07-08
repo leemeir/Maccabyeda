@@ -1,0 +1,22 @@
+﻿{
+  "name": "Macabbyeda",
+  "short_name": "App",
+  "id": "/index.razor",
+  "start_url": "/index.razor",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/images/logoSymbol.png",
+      "sizes": "561x632",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/logo-09.png",
+      "sizes": "1755x984",
+      "type": "image/png"
+    }
+    
+  ]
+}

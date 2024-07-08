@@ -1,0 +1,77 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+@inject HttpClient Http
+@using Programmin2_classroom.Shared.DTOS
+@using Programmin2_classroom.Client.Shared
+<link href="/css/login.css" rel="stylesheet" />
+<link href="/css/main.css" rel="stylesheet" />
+
+
+<div class="iphoneDiv bgLogin">
+
+    @*מסך ההתחברות לאפליקציה*@
+    <div class="LoginDiv">
+       <img src="/images/logo-09.png" width="100%" />
+
+        <br /><br />
+
+        @*טופס ההתחברות*@
+        <div class="inputsLogin">
+            <label for="identityNumber">Identity Number:</label>
+            <br />
+            <input type="text" id="identityNumber" @bind="identityNumber" />
+            <br /> <br />
+            <label for="password">Password:</label>
+            <br />
+            <input type="password" @bind="password" />
+            <br /><br /><br />
+            @*ולידציה לטעות בהזנת תעודת הזהות*@
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
+            <button @onclick="HandleLogin">Login</button>
+        </div>
+
+     
+    </div>
+</div>
+
+@code {
+    private string identityNumber;
+    private string password = "";
+    private string errorMessage;
+    
+
+    //פונקציה ששולחת את הקריאה לקונטרולר, מחזירה את המידע וולידציות
+    private async Task HandleLogin()
+    {
+        if (!string.IsNullOrEmpty(identityNumber) && !string.IsNullOrEmpty(password))
+        {
+            try
+            {
+                var response = await Http.GetAsync($"api/Login/{identityNumber}/{password}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var user = await response.Content.ReadFromJsonAsync<Users>();
+                    var userId = user.UserId;
+                    Navigation.NavigateTo($"/homepage/{userId}");
+                }
+                else
+                {
+                    errorMessage = "One of the details you entered is incorrect, Try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"An error occurred: {ex.Message}";
+            }
+        }
+        else
+        {
+            errorMessage = "Fill in all the fields!";
+        }
+    }
+
+   
+}

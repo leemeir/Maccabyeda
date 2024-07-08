@@ -1,0 +1,196 @@
+﻿/*CSS ליחידות הלימוד*/
+
+/*גרפיקה בחלק התחתון של העמוד*/
+#footer {
+    text-align: center;
+    flex-shrink: 0;
+}
+
+    #footerimg {
+        width: 393px;
+        position: absolute;
+        bottom: 0;
+        z-index: -1;
+        right: 0;
+    }
+
+/*כפתורים*/
+button {
+    margin-top: 50px;
+    font-size: 24px;
+    text-align: center;
+    background-color: #E03655;
+    width: 100%;
+    height: 50px;
+    color: white;
+    font-family: 'aniuk';
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 6px #C11E41;
+}
+
+/*כפתורים שנלחצו כבר*/
+.alreadyDoneButton {
+    margin-top: 50px;
+    font-size: 24px;
+    text-align: center;
+    background-color: #F6A317;
+    width: 100%;
+    height: 50px;
+    color: white;
+    font-family: 'aniuk';
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 6px #b08509;
+}
+
+/*כפתורים שעדיין לא ניתנים ללחיצה*/
+.Unclicked {
+    opacity: 0.3;
+}
+
+/*ניווט ביחידת לימוד*/
+.UnitNav {
+    display: flex;
+    align-items: center; /* מיישר את התמונות אנכית במרכז */
+    justify-content: center; /* ממרכז את התמונות אופקית בתוך ה-div */
+    margin: 30px;
+    padding-top: -20px;
+}
+
+    .UnitNav img {
+        margin: -80px 10px 0 10px; /* הוספת margin עליון שלילי */
+    }
+
+    .previousButton {
+        width: 100%;
+    }
+
+    .nextButton {
+        width: 100%;
+    }
+
+/*עמוד 1 - כניסה ליחידת לימוד*/
+.page1 {
+    display: ruby;
+    margin: 20px;
+}
+
+/*עמוד 2 - 4 כפתורים שמנווטים לעמודים שונים*/
+.page2 {
+    display: ruby;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+/*עמוד 3 - כפתור 1 מידע כללי*/
+.page3 {
+    display: ruby;
+    text-align: center;
+    font-family: 'Segoe UI';
+    font-size: 16px;
+    margin-right: 15px;
+    margin-left: 15px;
+}
+    .page3Info {
+        background-color: #FFDCE6;
+        padding: 20px;
+        width: 90%;
+        border-radius: 10px;
+        border: 4px solid #E03655; 
+    }
+
+
+.page4 {
+    display: ruby;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.page5 {
+    display: ruby;
+    margin:20px;
+}
+
+    .page5 p {
+        margin: 10px;
+        font-family: 'Segoe UI';
+        font-size: 16px;
+        text-align: justify;
+    }
+
+.page6 {
+    display: ruby;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.page7 {
+    display: ruby;
+    text-align: center;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+    .page7 button{
+        margin-top:50px;
+    }
+
+.page8{
+        text-align:justify;
+        margin:20px;
+    }
+
+    .page8info {
+        background-color: #FFDCE6;
+        padding: 20px;
+        width: 100%;
+        border-radius: 10px;
+        font-size:16px;
+    }
+
+
+/*כפתור סגירה של יחידת הלימוד*/
+#close {
+    width: 50px;
+    background-color: #ffffff00;
+    position: relative;
+    left: 0;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #333;
+    font-weight: bold;
+    position: absolute;
+    box-shadow: none;
+}
+
+
+.closePopup {
+    width: 350px;
+    background-color: white;
+    border: 5px solid #E03655;
+    border-radius: 10px;
+}
+
+
+
+.divFinishGame {
+    text-align: center;
+    margin-top: 50px;
+}
+
+    .divFinishGame button {
+        margin-top: 100px;
+        font-size: 24px;
+        background-color: #E03655;
+        width: 90%;
+        height: 50px;
+        color: white;
+        font-family: 'aniuk';
+        border: none;
+        border-radius: 10px;
+        box-shadow: 2px 2px
+    }
+
+   

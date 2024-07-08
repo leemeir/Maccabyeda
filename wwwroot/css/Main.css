@@ -1,0 +1,55 @@
+﻿/*התאמת המסך לגודל של טלפון*/
+.iphoneDiv {
+    position: relative;
+    width: 393px;
+    height: 852px;
+    border: 1px solid black;
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange children in a column */
+    margin-left: auto;
+    margin-right: auto;
+    overflow: auto;
+
+}
+
+.scrollbar-hidden {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer/Edge */
+    overflow-y: scroll; /* Enable scrolling */
+    overflow-x: hidden; /* Hide horizontal scrollbar */
+}
+/*כותרת ראשית*/
+h1 {
+    font-family: "aniuk", sans-serif;
+    font-style: normal;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 100px;
+}
+
+h2{
+    font-family: 'Segoe UI';
+    font-weight:bold;
+    font-size:20px;
+    text-align:center;
+    margin-bottom:30px;
+}
+
+/*כותרת משנית*/
+h4 {
+    font-family: 'Segoe UI';
+    font-style: normal;
+    text-align: center;
+    font-size: 20px;
+}
+
+p{
+    font-size:18px;
+    font-family:'Segoe UI';
+}
+
+
+
+
+

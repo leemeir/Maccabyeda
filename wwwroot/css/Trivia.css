@@ -1,0 +1,119 @@
+﻿/*מד התקדמות במשחק הטריוויה*/
+.mb-3 {
+    border: 2px solid #E03655;
+    height: 50px;
+    color: aliceblue;
+    background-color: #f1f1f1;
+    font-family: "aniuk", sans-serif;
+    margin:10px;
+    
+}
+
+/*שאלה במשחק טריוויה*/
+#question {
+    font-family: 'Segoe UI';
+    font-size: 18px;
+    text-align: center;
+}
+
+
+
+/*כפתורי עזרה במשחק טריוויה*/
+.helpButton {
+    background-color: #f1f1f1;
+    border: 2px solid #E03655;
+    font-family: 'aniuk';
+    color: #E03655;
+    font-size:14px;
+    margin:10px;
+}
+
+/*תשובות במשחק טריוויה*/
+.mb-2 {
+    background-color: #E796AD;
+    font-family:'Segoe UI';
+    font-size: 16px;
+    border: 2px solid #E03655;
+}
+
+/*DIV שעוטף את התשובות*/
+.answer-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: center;
+    margin:10px;
+}
+
+.answer-container .col-md-3 {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+/*כפתור בדיקה/שאלה הבאה*/
+.btn-info {
+    margin-top: 50px;
+    font-size: 24px;
+    text-align: center;
+    background-color: #E03655;
+    width: 90%;
+    height: 50px;
+    color: white;
+    font-family: 'aniuk';
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 6px #C11E41;
+}
+
+.progress{
+    overflow:visible;
+}
+
+#button {
+    display: flex;
+    justify-content: space-around;
+}
+
+/*כפתור סגירה של הטריוויה*/
+#close {
+    width: 50px;
+    background-color: #ffffff00;
+    position: relative;
+    left: 0;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #333;
+    font-weight: bold;
+    position: absolute;
+}
+
+.closePopup {
+    width: 350px;
+    background-color: white;
+    border: 5px solid #E03655;
+    border-radius:10px;
+}
+
+.divFinishGame {
+    text-align: center;
+    margin-top: 50px;
+
+}
+
+    .divFinishGame button {
+        margin-top: 100px;
+        font-size: 24px;
+        background-color: #E03655;
+        width: 90%;
+        height: 50px;
+        color: white;
+        font-family: 'aniuk';
+        border: none;
+        border-radius: 10px;
+        box-shadow: 2px 2px
+    }

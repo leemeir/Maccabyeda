@@ -1,0 +1,162 @@
+﻿html, body {
+    height: 852px;
+    margin: 0;
+    padding: 0;
+}
+
+
+.HomepageHeader p {
+    position: absolute;
+    right: 70px;
+    top: 80px;
+}
+
+.HomepageHeader img {
+    width: 15%;
+    position: absolute;
+    right: 15px;
+    top: 70px;
+}
+
+#mapDiv {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: 1; /* Allow mapDiv to grow and take up remaining space */
+    position: relative;
+}
+
+#mapImage {
+    height: 580px;
+    display: block;
+    margin-left: auto;
+    margin-right: 50px;
+    margin-top: 100px;
+}
+
+#footer {
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#footerimg {
+    width: 393px;
+    position: absolute;
+    bottom: 0;
+    z-index: -1;
+    right: 0;
+}
+
+.popupCitys {
+    position: absolute;
+    height: 180px;
+    width: 300px;
+    border-radius: 20px;
+}
+
+    .Haifa {
+        background-color: #FAD9E7;
+        box-shadow: 0 6px #C11E41;
+        color: #E03655;
+    }
+
+    .Tel-Aviv {
+        background-color: #D9EFFA;
+        box-shadow: 0 6px #007AA0;
+        color: #009EDA;
+}
+
+    .Jerusalem {
+        background-color: #EED9FA;
+        box-shadow: 0 6px #5C2579;
+        color: #683383;
+    }
+
+.Dead-Sea {
+    background-color: #D9FAE8;
+    box-shadow: 0 6px #147268;
+    color: #239589;
+}
+
+.popupButtons {
+    text-align: center;
+    box-shadow: none;
+}
+
+    .popupButtons button {
+/*        background-color: #E03655;
+*/        height: 40px;
+        width: 250px;
+        color: white;
+        font-family: 'aniuk';
+        font-size: 20px;
+        border: none;
+        margin: 10px;
+        border-radius: 10px;
+/*        box-shadow: 0 6px #C11E41;
+*/    }
+
+.Haifa button {
+    background-color: #E03655;
+    box-shadow: 0 6px #C11E41;
+}
+    
+.Tel-Aviv button {
+    background-color: #009EDA;
+    box-shadow: 0 6px #007AA0;
+}
+
+.Jerusalem button {
+    background-color: #683383;
+    box-shadow: 0 6px #5C2579;
+}
+
+.Dead-Sea button {
+    background-color: #239589;
+    box-shadow: 0 6px #147268;
+}
+
+#closePopupButton {
+    width: 50px;
+    background-color: #ffffff00;
+    position: relative;
+    left: 0;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #333;
+    font-weight: bold;
+    box-shadow: none;
+}
+
+.icons {
+    height: 135px;
+    width: 60px;
+    position: absolute;
+    display: flex;
+    flex-direction: column; /* This line makes the icons appear one above the other */
+    bottom: 150px;
+    left: 30px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #E1E1E1;
+    border-radius: 30px;
+    background-color: #F5F5F5;
+}
+
+    .icons img {
+        margin-top: 1px;
+    }
+
+.backgroundDiv {
+    height: 852px;
+    width: 393px;
+    position: absolute;
+    z-index: -3;
+}
+
+    .backgroundDiv img {
+        width: 100%;
+        opacity:0.5;
+        cursor:pointer;
+    }

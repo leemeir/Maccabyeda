@@ -1,0 +1,313 @@
+﻿@page "/haifa/trivia/{UserId:int}"
+<link href="/css/main.css" rel="stylesheet" />
+<link href="/css/trivia.css" rel="stylesheet" />
+@using System.Linq
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+@inject NavigationManager Navigation
+
+@*עמוד טריוויה בנושא: חיפה*@
+
+@*מגדיר גודל של טלפון 393*852*@
+<div class="iphoneDiv scrollbar-hidden">
+
+
+    @*משחק טריוויה עצמו*@
+    @if (currentQuestionIndex < questions.Length && buttonText != "Done")
+    {
+
+        @*חלק עליון של הטריוויה - צבירת נקודות,סגירה וכותרות*@
+        <p style="text-align:right; margin:10px">@coins</p>
+        <button id="close" @onclick="CloseTrivia">&times;</button>
+        <h1>Haifa</h1>
+        <h4>Test yourself</h4>
+        <br />
+
+        @*מד התקדמות בטריוויה*@
+        <div class="progress mb-3">
+            <div class="progress-bar" role="progressbar" style="width: @(answeredQuestionsCount * 100 / questions.Length)%; background-color:#E796AD" aria-valuenow="@(answeredQuestionsCount * 100 / questions.Length)" aria-valuemin="0" aria-valuemax="100">
+                @answeredQuestionsCount / @questions.Length
+            </div>
+        </div>
+        <br />
+
+        @*כפתורי עזרה במשחק*@
+        <div id="divHelpButtons">
+            <button class="btn btn-primary helpButton" @onclick="UseFiftyFifty">50:50</button>
+            <button class="btn btn-primary helpButton" @onclick="AskFriend">Ask a Friend</button>
+        </div>
+        <br />
+
+        <br />
+        <p id="question">@questions[currentQuestionIndex].QuestionText</p>
+
+        <div class="answer-container">
+            @foreach (var answer in questions[currentQuestionIndex].Answers)
+            {
+                <div class="col-md-3">
+                    <button class="btn btn-primary btn-block mb-2" @onclick="() => OnAnswerSelected(answer)">
+                        @answer
+                        @if (selectedAnswer == answer)
+                        {
+                            <span class="badge badge-light float-right"></span>
+                        }
+                    </button>
+                </div>
+            }
+        </div>
+        <br /><br />
+
+        <div id="button">
+            <button class="btn btn-info" @onclick="CheckAnswer">@buttonText</button>
+        </div>
+        <br><br />
+
+        @if (feedbackMessage != null)
+        {
+            <p style="text-align:center">@feedbackMessage</p>
+        }
+    }
+    else
+    {
+        <div class="divFinishGame">
+            <h1>Congratulations!</h1>
+            <br><br>
+            <p>You have finished the trivia about the city of Haifa</p>
+            <p>And you earned more @coins coins!</p>
+            <img src="/images/coin.png" style="width:80%"/>
+            <br><br>
+            <button class="btn btn-info" @onclick="AddCoinsAsync">close</button>
+        </div>
+    }
+
+    @*פופ אפ שמוודא רצון סגירה של הטריוויה*@
+    @if (IsClosePopup)
+    {
+        <div class="modal fade show" id="closeModal" tabindex="-1" role="dialog" style="display: block;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content closePopup">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Are you sure you want to close the trivia? </h5>
+                    </div>
+                    <div class="modal-body">
+                        <p>You will lose the points you have earned.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @onclick="HideClosePopup">No, i want to stay</button>
+                        <button type="button" class="btn btn-primary" @onclick="ConfirmClose">Yes, Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-backdrop fade show"></div>
+    }
+
+</div>
+
+
+
+@code {
+
+    //פרמטרים
+    private string selectedAnswer;
+    private string feedbackMessage;
+    private string buttonText = "Check Answer";
+    private int currentQuestionIndex = 0;
+    private int answeredQuestionsCount = 0;
+    private int correctAnswersCount = 0;
+    public int coins = 0;
+    private bool IsClosePopup = false;
+    private string message = "";
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    //מאגר השאלות בתוך מערך
+    private Question[] questions = new Question[]
+    {
+        new Question
+        {
+            QuestionText = "What is the iconic landmark in Haifa known for its meticulously landscaped terraces?",
+            Answers = new string[] { "Western Wall", "Bahá'í Gardens", "Church of the Holy Sepulchre", "Dome of the Rock" },
+            CorrectAnswer = "Bahá'í Gardens"
+        },
+        new Question
+        {
+            QuestionText = "Which university in Haifa is renowned for its contributions to science and engineering?",
+            Answers = new string[] { "Hebrew University of Jerusalem", "Tel Aviv University", "Technion – Israel Institute of Technology", "Ben-Gurion University of the Negev" },
+            CorrectAnswer = "Technion – Israel Institute of Technology"
+        },
+        new Question
+        {
+            QuestionText = "Which sea provides a stunning backdrop to the city of Haifa?",
+            Answers = new string[] { "Dead Sea", "Red Sea", "Mediterranean Sea", "Sea of Galilee" },
+            CorrectAnswer = "Mediterranean Sea"
+        },
+        new Question
+        {
+            QuestionText = "Which festival in Haifa celebrates the city's multiculturalism during the holiday season?",
+            Answers = new string[] { "Haifa International Film Festival", "Haifa International Children's Theater Festival", "Festival of Lights", "Holiday of Holidays Festival" },
+            CorrectAnswer = "Holiday of Holidays Festival"
+        },
+        new Question
+        {
+            QuestionText = "What is the capital of Italy?",
+            Answers = new string[] { "Rome", "Athens", "Madrid", "Berlin" },
+            CorrectAnswer = "Rome"
+        },
+        new Question { QuestionText = "What is 3 * 3?", Answers = new string[] { "6", "7", "8", "9" }, CorrectAnswer = "9" },
+        new Question { QuestionText = "What is the capital of the USA?", Answers = new string[] { "New York", "Los Angeles", "Washington D.C.", "Chicago" }, CorrectAnswer = "Washington D.C." },
+        new Question { QuestionText = "What is 5 - 3?", Answers = new string[] { "1", "2", "3", "4" }, CorrectAnswer = "2" },
+        new Question { QuestionText = "What is the capital of Canada?", Answers = new string[] { "Toronto", "Ottawa", "Vancouver", "Montreal" }, CorrectAnswer = "Ottawa" },
+        new Question { QuestionText = "What is 10 / 2?", Answers = new string[] { "2", "3", "5", "6" }, CorrectAnswer = "5" }
+    };
+
+    //פונקציה של בחירת תשובה
+    private void OnAnswerSelected(string answer)
+    {
+        try
+        {
+            selectedAnswer = answer;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in OnAnswerSelected: {ex.Message}");
+            feedbackMessage = "An error occurred while selecting an answer.";
+        }
+    }
+
+    //פונקציה של בדיקת התשובה ושינוי הכפתורים
+    private void CheckAnswer()
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(selectedAnswer))
+            {
+                feedbackMessage = "Please select an answer.";
+                return;
+            }
+
+            if (buttonText == "Next Question")
+            {
+                currentQuestionIndex = (currentQuestionIndex + 1) % questions.Length;
+                feedbackMessage = null;
+                selectedAnswer = null;
+                buttonText = "Check Answer";
+            }
+            else
+            {
+                answeredQuestionsCount++;
+
+                if (selectedAnswer == questions[currentQuestionIndex].CorrectAnswer)
+                {
+                    feedbackMessage = "Correct!";
+                    coins += 10;
+                }
+                else
+                {
+                    feedbackMessage = $"Incorrect. The correct answer is: {questions[currentQuestionIndex].CorrectAnswer}";
+                }
+
+                if (answeredQuestionsCount == questions.Length)
+                {
+                    buttonText = "Done";
+                }
+                else
+                {
+                    buttonText = "Next Question";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in CheckAnswer: {ex.Message}");
+            feedbackMessage = "An error occurred while checking the answer.";
+        }
+    }
+
+
+    //פונקציה לעזרה של 50:50
+    private void UseFiftyFifty()
+    {
+        try
+        {
+            // Logic for 50:50 option
+            Console.WriteLine("50:50 option used.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in UseFiftyFifty: {ex.Message}");
+            feedbackMessage = "An error occurred while using 50:50 option.";
+        }
+    }
+
+
+    //פונקציה לעזרת חבר
+    private void AskFriend()
+    {
+        try
+        {
+            // Logic for asking a friend
+            Console.WriteLine("Ask a Friend option used.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in AskFriend: {ex.Message}");
+            feedbackMessage = "An error occurred while asking a friend.";
+        }
+    }
+
+
+    //DTO לשאלות
+    public class Question
+    {
+        public string QuestionText { get; set; }
+        public string[] Answers { get; set; }
+        public string CorrectAnswer { get; set; }
+    }
+
+    //פונקציה שפותחת פופ אפ שמוודא סגירת טרויוויה
+    private void CloseTrivia(){
+        IsClosePopup = true;
+    }
+
+    //פונקציה שמסתירה את הפופ אפ
+    private void HideClosePopup()
+    {
+        IsClosePopup = false;
+    }
+
+    //פונקציה שמאשרת סגירת טרויוויה
+    private void ConfirmClose()
+    {
+        // Logic to handle the quiz closing
+        Navigation.NavigateTo($"/homepage/{UserId}");
+        IsClosePopup = false;
+
+    }
+
+    private async Task AddCoinsAsync()
+    {
+        try
+        {
+            var url = $"api/Coins/HaifaTrivia/{UserId}/{coins}";
+            var updateResponse = await Http.GetAsync(url);
+            if (updateResponse.IsSuccessStatusCode)
+            {
+                Navigation.NavigateTo($"/homepage/{UserId}");
+            }
+            else
+            {
+                message = "There is an error";
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle the exception as needed
+            message = $"An exception occurred: {ex.Message}";
+        }
+    }
+
+
+
+}

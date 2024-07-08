@@ -1,0 +1,49 @@
+﻿@page "/settings/{UserId:int}"
+@inject HttpClient Http
+@using Programmin2_classroom.Shared.DTOS
+
+
+<div class="iphoneDiv">
+<h1>settings</h1>
+
+
+<p>First Name: @userDetails.FirstName</p>
+<p>Last Name: @userDetails.LastName</p>
+<p>Personal Id: @userDetails.PersonalId</p>
+<p>Country: @userDetails.Country</p>
+<p>Coins: @userDetails.Coins</p>
+
+</div>
+
+@code{
+    [Parameter]
+    public int UserId { get; set; }
+
+    private Users userDetails;
+    private string errorMessage = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UserDetails();
+    }
+
+
+    private async Task UserDetails(){
+        try
+        {
+            var response = await Http.GetAsync($"api/Settings/{UserId}");
+            if (response.IsSuccessStatusCode)
+            {
+                userDetails = await response.Content.ReadFromJsonAsync<Users>();
+            }
+            else
+            {
+                errorMessage = "One of the details you entered is incorrect, Try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+    }
+}
